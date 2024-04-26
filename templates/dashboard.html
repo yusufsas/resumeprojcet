@@ -6,9 +6,13 @@
     <title>Document</title>
 </head>
 <body>
-    
-    <h1>kocaeli yazılımcıları derneği</h1>
-    <a href="{%url 'signup'%}">Kaydol</a>
-    <a href="{%url 'user_login'%}">Giriş yap</a>
+    <h1>hosgeldin {{user.first_name}} </h1>
+
+    {%for job in jobs%}
+
+    <a href="{%url 'jobdetail' job.id%}"><h1>{{job.name}}</h1></a>
+
+    {%endfor%}
+
 </body>
 </html>
