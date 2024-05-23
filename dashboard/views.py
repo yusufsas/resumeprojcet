@@ -15,26 +15,28 @@ import numpy as np
 def index(request):
     return render(request, "index.html")
 def dashboard(request):
-    jobs = Job.objects.all()
-    
-    user = request.user.id
-    account = Account.objects.get(user_id=user)
-    print(account.user.id)
-    if request.method == 'POST':
-        image = request.FILES.get("resim")
-        output_path = yuz_algila(image)
-        image_path = os.path.join(settings.MEDIA_ROOT, str(account.image))
-        #output_path = detect_faces(image_path)
-        print(output_path)
+    if request.user.is_authenticated:
+
+        jobs = Job.objects.all()
         
-        if output_path:
-            account.image = image
-            account.save()
-            return render(request, 'dashboard.html', {'jobs': jobs})
-        else:
-            print("No face detected")
-            message = "Yüzünüzün bulunduğu bir fotoğraf yükleyiniz"
-            return render(request, 'dashboard.html', {'jobs': jobs,  'message': message})
+        user = request.user.id
+        account = Account.objects.get(user_id=user)
+        print(account.user.id)
+        if request.method == 'POST':
+            image = request.FILES.get("resim")
+            output_path = yuz_algila(image)
+            image_path = os.path.join(settings.MEDIA_ROOT, str(account.image))
+            #output_path = detect_faces(image_path)
+            print(output_path)
+            
+            if output_path:
+                account.image = image
+                account.save()
+                return render(request, 'dashboard.html', {'jobs': jobs})
+            else:
+                print("No face detected")
+                message = "Yüzünüzün bulunduğu bir fotoğraf yükleyiniz"
+                return render(request, 'dashboard.html', {'jobs': jobs,  'message': message})
             
             
     return render(request, 'dashboard.html', {'jobs': jobs})
