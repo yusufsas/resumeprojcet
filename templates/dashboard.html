@@ -14,5 +14,19 @@
 
     {%endfor%}
 
+    <h1>Upload an Image</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group my-1">
+            <label for="id_profile_image">Profil Resmi Yükle:</label>
+            <input type="file" name="resim" id="id_profile_image">
+        </div>
+        <button type="submit">Upload</button>
+        
+    </form>
+    
+
+    <h1> {{message}} </h1>
+
 </body>
 </html>

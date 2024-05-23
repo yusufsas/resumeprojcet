@@ -1,0 +1,14 @@
+<!-- show_detected_face.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Show Detected Face</title>
+</head>
+<body>
+    {% if image.url %}
+        <img src="{{ image.url }}" alt="Detected Face">
+    {% else %}
+        <p>No detected face image found.</p>
+    {% endif %}
+</body>
+</html>

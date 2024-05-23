@@ -26,6 +26,8 @@ urlpatterns = [
     path('dashboard/',include('dashboard.urls')),
     path('signup/', signup, name='signup'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/', include('django.contrib.auth.urls')),
+
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)\
  +static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
