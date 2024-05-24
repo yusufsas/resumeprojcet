@@ -3,30 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>User Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Oswald', sans-serif;
+        padding-top: 50px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .profile-info {
+        margin-bottom: 30px;
+      }
+
+      .profile-image {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 20px;
+      }
+
+      .btn-upload {
+        margin-top: 10px;
+        border-radius: 0.5rem;
+      }
+
+      .job-card {
+        margin-bottom: 10px;
+      }
+
+      .upload-section {
+        margin-top: 50px;
+      }
+
+      .navbar {
+        margin-bottom: 30px;
+      }
+
+      .card {
+        border: none;
+        border-radius: 0.5rem;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .btn-primary, .btn-danger, .btn-outline-info {
+        border-radius: 0.5rem;
+      }
+
+      .btn-primary:hover, .btn-danger:hover, .btn-outline-info:hover {
+        opacity: 0.8;
+      }
+    </style>
 </head>
 <body>
-    <h1>hosgeldin {{user.first_name}} </h1>
+    <div class="container">
+        <nav class="navbar navbar-light bg-light">
+            <form class="form-inline my-2 my-lg-0 mx-auto" method="post" action="">
+              {% csrf_token %}
+              <input class="form-control mr-sm-2" type="search" placeholder="Kullanıcı Ara" aria-label="Ara" name="search1">
+              <button class="btn btn-outline-info my-2 my-sm-0" type="submit" name="search1">Ara</button>
+            </form>
+            <form class="form-inline my-2 my-lg-0 mx-auto" method="post" action="">
+                {% csrf_token %}
+                <input class="form-control mr-sm-2" type="search" placeholder="İş Ara" aria-label="Ara" name="search2">
+                <button class="btn btn-outline-info my-2 my-sm-0" type="submit" name="search2">Ara</button>
+            </form>
+        </nav>
 
-    {%for job in jobs%}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="profile-info text-center">
+                    <h1>Welcome, {{ user.first_name }} {{ user.last_name }}</h1>
+                    <img src="{% if account.image %}{{ account.image.url }}{% else %}https://via.placeholder.com/200{% endif %}" alt="Profile Image" class="profile-image">
+                    <p>Email: {{ user.email }}</p>
+                    <p>Phone: {{ account.number }}</p>
+                    {% if account.cv %}
+                    <a href="{% url 'pdf_view' %}" class="btn btn-dark btn-upload">View CV</a>
+                    {% else %}
+                    <p>No CV available.</p>
+                    {% endif %}
+                </div>
 
-    <a href="{%url 'jobdetail' job.id%}"><h1>{{job.name}}</h1></a>
+                {% if request.user.account.role == "manager" %}
+                <div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+                        <button type="submit" class="btn btn-dark btn-upload" name="addjob">Publish</button>
+                    </form>
+                </div>
+                {% endif %}
 
-    {%endfor%}
+                <div class="upload-section">
+                    <div class="mt-4">
+                        <h2>Upload Profile Image</h2>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="file" name="resim" class="form-control-file">
+                            </div>
+                            <button type="submit" class="btn btn-dark btn-upload" name="form1_submit">Upload</button>
+                        </form>
+                    </div>
 
-    <h1>Upload an Image</h1>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group my-1">
-            <label for="id_profile_image">Profil Resmi Yükle:</label>
-            <input type="file" name="resim" id="id_profile_image">
+                    <div class="mt-4">
+                        <h2>Upload CV</h2>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="file" id="pdf_file" name="pdf_file" class="form-control-file">
+                            </div>
+                            <button type="submit" class="btn btn-dark btn-upload" name="form2_submit">Upload</button>
+                        </form>
+                    </div>
+                </div>
+
+                {% if request.user.account.role == "admin" %}
+                <div>
+                    {% for acc in accounts %}
+                    <div class="card p-3">
+                        <h1>{{ acc.first_name }} {{ acc.last_name }}</h1>
+                        <img src="{% if acc.image %}{{ acc.image.url }}{% else %}https://via.placeholder.com/200{% endif %}" alt="Profile Image" class="profile-image mb-4">
+                        <form action="{% url 'delete_account' acc.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Sil</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="display-6">Jobs</h2>
+                <div class="job-list">
+                    {% for job in jobs %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ job.name }}</h5>
+                            <p class="card-text">Location: {{ job.location }}</p>
+                            <a href="{% url 'jobdetail' job.id %}" class="btn btn-danger">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <button type="submit">Upload</button>
-        
-    </form>
-    
-
-    <h1> {{message}} </h1>
-
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

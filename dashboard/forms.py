@@ -28,6 +28,6 @@ class SignUpForm(UserCreationForm):
 class ClientSignUpForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ['number']
+        fields = ['number','role']
         
         

@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpResponse
 from .forms import SignUpForm, ClientSignUpForm, ImageUploadForm, UserProfileForm
 from .models import Job, Account, ImageUpload, UserProfile
 
@@ -17,29 +17,116 @@ def index(request):
 def dashboard(request):
     if request.user.is_authenticated:
 
-        jobs = Job.objects.all()
+        user_role = request.user.account.role
+
+        if user_role == Account.ROLE_ADMIN:
+            jobs = Job.objects.all()
+            accounts=Account.objects.all()
+           
         
-        user = request.user.id
-        account = Account.objects.get(user_id=user)
-        print(account.user.id)
-        if request.method == 'POST':
-            image = request.FILES.get("resim")
-            output_path = yuz_algila(image)
-            image_path = os.path.join(settings.MEDIA_ROOT, str(account.image))
-            #output_path = detect_faces(image_path)
-            print(output_path)
+            user = request.user.id
+            account = Account.objects.get(user_id=user)
+           
+            if request.method == 'POST':
+
+                if 'form1_submit' in request.POST:
+                    image = request.FILES.get("resim")
+                    output_path = yuz_algila(image)
+                    image_path = os.path.join(settings.MEDIA_ROOT, str(account.image))
+                    #output_path = detect_faces(image_path)
+                 
+                    
+                    if output_path:
+                        account.image = image
+                        account.save()
+                        return render(request, 'dashboard.html', {'jobs': jobs,'account':account,'accounts':accounts})
+                    else:
+                      
+                        message = "Yüzünüzün bulunduğu bir fotoğraf yükleyiniz"
+                        return render(request, 'dashboard.html', {'jobs': jobs,  'message': message,'account':account,'accounts':accounts})
+                elif 'form2_submit' in request.POST:
             
-            if output_path:
-                account.image = image
-                account.save()
-                return render(request, 'dashboard.html', {'jobs': jobs})
-            else:
-                print("No face detected")
-                message = "Yüzünüzün bulunduğu bir fotoğraf yükleyiniz"
-                return render(request, 'dashboard.html', {'jobs': jobs,  'message': message})
+                    cv = request.FILES.get("pdf_file")
+                    account.cv = cv
+                    account.save() 
+            return render(request, 'dashboard.html', {'jobs': jobs,'account':account,'accounts':accounts})
+
+            # Admin için tüm görevleri listele
+        elif user_role == Account.ROLE_MANAGER:
+            jobs = Job.objects.all()
+        
+            user = request.user.id
+            account = Account.objects.get(user_id=user)
+           
+            if request.method == 'POST':
+
+                if 'form1_submit' in request.POST:
+                    image = request.FILES.get("resim")
+                    output_path = yuz_algila(image)
+                    image_path = os.path.join(settings.MEDIA_ROOT, str(account.image))
+                    #output_path = detect_faces(image_path)
+                 
+                    
+                    if output_path:
+                        account.image = image
+                        account.save()
+                        return render(request, 'dashboard.html', {'jobs': jobs,'account':account})
+                    else:
+                      
+                        message = "Yüzünüzün bulunduğu bir fotoğraf yükleyiniz"
+                        return render(request, 'dashboard.html', {'jobs': jobs,  'message': message,'account':account})
+              
+                elif 'form2_submit' in request.POST:
             
+                    cv = request.FILES.get("pdf_file")
+                    account.cv = cv
+                    account.save()
+
+                elif 'addjob' in request.POST:
+
+                    job_name=request.POST.get('name')
+                    des=request.POST.get('description')
+                    instance=Job.objects.create(name=job_name,description=des)
+                    instance.save()
+
             
-    return render(request, 'dashboard.html', {'jobs': jobs})
+        elif user_role == Account.ROLE_EMPLOYEE:
+            jobs = Job.objects.all()
+        
+            user = request.user.id
+            account = Account.objects.get(user_id=user)
+           
+            if request.method == 'POST':
+
+                if 'form1_submit' in request.POST:
+                    image = request.FILES.get("resim")
+                    output_path = yuz_algila(image)
+                    image_path = os.path.join(settings.MEDIA_ROOT, str(account.image))
+                    #output_path = detect_faces(image_path)
+                 
+                    
+                    if output_path:
+                        account.image = image
+                        account.save()
+                        return render(request, 'dashboard.html', {'jobs': jobs,'account':account})
+                    else:
+                      
+                        message = "Yüzünüzün bulunduğu bir fotoğraf yükleyiniz"
+                        return render(request, 'dashboard.html', {'jobs': jobs,  'message': message,'account':account})
+                elif 'form2_submit' in request.POST:
+            
+                    cv = request.FILES.get("pdf_file")
+                    account.cv = cv
+                    account.save()
+
+        
+            
+    return render(request, 'dashboard.html', {'jobs': jobs,'account':account})
+def delete_account(request, id):
+    account = Account.objects.get(id=id)
+    account.delete()
+    return redirect('dashboard')
+
 
 def signup(request):
     if request.method == 'POST':
@@ -63,6 +150,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            request.session['user_id'] = user.id
             return redirect('dashboard')
     else:
         form = AuthenticationForm()
@@ -156,3 +244,13 @@ def update_profile(request):
     else:
         form = UserProfileForm(instance=request.user.userprofile)
     return render(request, 'profiles/update_profile.html', {'form': form})
+
+
+def pdf_view(request):
+    user = request.user.id
+    account = Account.objects.get(user_id=user)
+
+    pdf = account.cv
+    with open(pdf.path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/pdf')
+    return response
