@@ -78,6 +78,7 @@
       .btn-outline-info:hover {
         opacity: 0.8;
       }
+
       .search-history div {
         padding: 8px 16px;
         cursor: pointer;
@@ -273,7 +274,6 @@
               <div class="card-body">
                 <h5 class="card-title">{{ job.name }}</h5>
                 <p class="card-text">Location: {{ job.location }}</p>
-
                 <a href="{% url 'jobdetail' job.id %}" class="btn btn-danger"
                   >View Details</a
                 >
@@ -290,122 +290,127 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <script>
+      function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+      }
+
+      function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == " ") c = c.substring(1, c.length);
+          if (c.indexOf(nameEQ) == 0)
+            return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+      }
+
+      function eraseCookie(name) {
+        document.cookie = name + "=; Max-Age=-99999999;";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var userSearchInput = document.querySelector('input[name="search1"]');
+        var jobSearchInput = document.querySelector('input[name="search2"]');
+        var userSearchHistory = document.getElementById("userSearchHistory");
+        var jobSearchHistory = document.getElementById("jobSearchHistory");
+
+        if (userSearchInput) {
+          userSearchInput.addEventListener("focus", function () {
+            var userSearches = getCookie("userSearches");
+            if (userSearches) {
+              showSearchHistory(userSearchHistory, userSearches.split(","));
+            }
+          });
+
+          userSearchInput.addEventListener("input", function () {
+            var userSearches = getCookie("userSearches");
+            if (userSearches) {
+              showSearchHistory(userSearchHistory, userSearches.split(","));
+            }
+          });
+
+          userSearchInput
+            .closest("form")
+            .addEventListener("submit", function () {
+              var query = userSearchInput.value;
+              var userSearches = getCookie("userSearches");
+              userSearches = userSearches ? userSearches.split(",") : [];
+              if (!userSearches.includes(query)) {
+                userSearches.push(query);
+                setCookie("userSearches", userSearches.join(","), 30);
+              }
+            });
+        }
+
+        if (jobSearchInput) {
+          jobSearchInput.addEventListener("focus", function () {
+            var jobSearches = getCookie("jobSearches");
+            if (jobSearches) {
+              showSearchHistory(jobSearchHistory, jobSearches.split(","));
+            }
+          });
+
+          jobSearchInput.addEventListener("input", function () {
+            var jobSearches = getCookie("jobSearches");
+            if (jobSearches) {
+              showSearchHistory(jobSearchHistory, jobSearches.split(","));
+            }
+          });
+
+          jobSearchInput
+            .closest("form")
+            .addEventListener("submit", function () {
+              var query = jobSearchInput.value;
+              var jobSearches = getCookie("jobSearches");
+              jobSearches = jobSearches ? jobSearches.split(",") : [];
+              if (!jobSearches.includes(query)) {
+                jobSearches.push(query);
+                setCookie("jobSearches", jobSearches.join(","), 30);
+              }
+            });
+        }
+        function showSearchHistory(container, searches) {
+          container.innerHTML = "";
+          searches.forEach(function (search) {
+            var searchItem = document.createElement("div");
+            searchItem.textContent = search;
+            searchItem.addEventListener("click", function () {
+              container.previousElementSibling.value = search;
+              container.style.display = "none";
+            });
+            container.appendChild(searchItem);
+          });
+          container.style.display = "block";
+          container.style.width =
+            container.previousElementSibling.offsetWidth - 8 + "px";
+          container.style.top =
+            container.previousElementSibling.offsetHeight + 5 + "px";
+        }
+
+        document.addEventListener("click", function (e) {
+          if (
+            !userSearchInput.contains(e.target) &&
+            !userSearchHistory.contains(e.target)
+          ) {
+            userSearchHistory.style.display = "none";
+          }
+          if (
+            !jobSearchInput.contains(e.target) &&
+            !jobSearchHistory.contains(e.target)
+          ) {
+            jobSearchHistory.style.display = "none";
+          }
+        });
+      });
+    </script>
   </body>
 </html>
-<script>
-  function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-
-  function getCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-  }
-
-  function eraseCookie(name) {
-    document.cookie = name + "=; Max-Age=-99999999;";
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    var userSearchInput = document.querySelector('input[name="search1"]');
-    var jobSearchInput = document.querySelector('input[name="search2"]');
-    var userSearchHistory = document.getElementById("userSearchHistory");
-    var jobSearchHistory = document.getElementById("jobSearchHistory");
-
-    if (userSearchInput) {
-      userSearchInput.addEventListener("focus", function () {
-        var userSearches = getCookie("userSearches");
-        if (userSearches) {
-          showSearchHistory(userSearchHistory, userSearches.split(","));
-        }
-      });
-
-      userSearchInput.addEventListener("input", function () {
-        var userSearches = getCookie("userSearches");
-        if (userSearches) {
-          showSearchHistory(userSearchHistory, userSearches.split(","));
-        }
-      });
-
-      userSearchInput.closest("form").addEventListener("submit", function () {
-        var query = userSearchInput.value;
-        var userSearches = getCookie("userSearches");
-        userSearches = userSearches ? userSearches.split(",") : [];
-        if (!userSearches.includes(query)) {
-          userSearches.push(query);
-          setCookie("userSearches", userSearches.join(","), 30);
-        }
-      });
-    }
-
-    if (jobSearchInput) {
-      jobSearchInput.addEventListener("focus", function () {
-        var jobSearches = getCookie("jobSearches");
-        if (jobSearches) {
-          showSearchHistory(jobSearchHistory, jobSearches.split(","));
-        }
-      });
-
-      jobSearchInput.addEventListener("input", function () {
-        var jobSearches = getCookie("jobSearches");
-        if (jobSearches) {
-          showSearchHistory(jobSearchHistory, jobSearches.split(","));
-        }
-      });
-
-      jobSearchInput.closest("form").addEventListener("submit", function () {
-        var query = jobSearchInput.value;
-        var jobSearches = getCookie("jobSearches");
-        jobSearches = jobSearches ? jobSearches.split(",") : [];
-        if (!jobSearches.includes(query)) {
-          jobSearches.push(query);
-          setCookie("jobSearches", jobSearches.join(","), 30);
-        }
-      });
-    }
-    function showSearchHistory(container, searches) {
-      container.innerHTML = "";
-      searches.forEach(function (search) {
-        var searchItem = document.createElement("div");
-        searchItem.textContent = search;
-        searchItem.addEventListener("click", function () {
-          container.previousElementSibling.value = search;
-          container.style.display = "none";
-        });
-        container.appendChild(searchItem);
-      });
-      container.style.display = "block";
-      container.style.width =
-        container.previousElementSibling.offsetWidth - 8 + "px";
-      container.style.top =
-        container.previousElementSibling.offsetHeight + 5 + "px";
-    }
-
-    document.addEventListener("click", function (e) {
-      if (
-        !userSearchInput.contains(e.target) &&
-        !userSearchHistory.contains(e.target)
-      ) {
-        userSearchHistory.style.display = "none";
-      }
-      if (
-        !jobSearchInput.contains(e.target) &&
-        !jobSearchHistory.contains(e.target)
-      ) {
-        jobSearchHistory.style.display = "none";
-      }
-    });
-  });
-</script>
