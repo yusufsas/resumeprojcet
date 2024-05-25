@@ -73,12 +73,6 @@
         border-radius: 0.5rem;
       }
 
-      .btn-primary:hover,
-      .btn-danger:hover,
-      .btn-outline-info:hover {
-        opacity: 0.8;
-      }
-
       .search-history div {
         padding: 8px 16px;
         cursor: pointer;
@@ -103,9 +97,49 @@
         top: calc(100% + 5px);
         left: 0;
       }
+      .navbar-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #007bff; /* Ara butonunun rengi */
+        border-radius: 0 0 20px 0; /* Sol alt köşeyi yuvarlak yapar */
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Kenarlara siyah gölge ekleme */
+        transition: background-color 0.3s ease; /* Arka plan renginin değişimini yumuşatma */
+      }
+
+      .navbar-nav:hover {
+        background-color: #0056b3; /* Hover edildiğinde daha koyu bir mavi tonu */
+      }
+
+      .navbar-nav .btn-primary,
+      .navbar-nav .btn-danger,
+      .navbar-nav .btn-outline-info {
+        border-radius: 0.5rem;
+      }
+
+      .navbar-nav .btn-primary:hover,
+      .navbar-nav .btn-danger:hover,
+      .navbar-nav .btn-outline-info:hover {
+        opacity: 0.8;
+      }
+
+      .navbar-nav:hover .btn-primary,
+      .navbar-nav:hover .btn-danger,
+      .navbar-nav:hover .btn-outline-info {
+        opacity: 0.8;
+      }
     </style>
   </head>
   <body>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a href="{% url 'appliedjobs'%}" class="nav-link" style="color: white"
+          >Applied Jobs</a
+        >
+      </li>
+    </ul>
+
     <div class="container">
       <nav class="navbar navbar-light bg-light">
         <form
@@ -157,6 +191,7 @@
           </button>
         </form>
       </nav>
+
       <div class="row">
         <div class="col-md-6">
           <div class="profile-info text-center">
