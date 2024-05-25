@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .forms import SignUpForm, ClientSignUpForm, ImageUploadForm, UserProfileForm
 from .models import Job, Account, ImageUpload, UserProfile
+from .serializers import JobSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 import cv2
 import os
@@ -254,3 +258,22 @@ def pdf_view(request):
     with open(pdf.path, 'rb') as f:
         response = HttpResponse(f.read(), content_type='application/pdf')
     return response
+
+def search_jobs(request):
+    query = request.POST.get('q', '')
+    if query:
+        jobs = Job.objects.filter(name__icontains=query)
+        return render(request, 'search_jobs.html', {'jobs': jobs})
+    return render(request, 'search_jobs.html', {'jobs': []})
+
+
+class SearchJobsAPI(APIView):
+    def get(self, request):
+        query = request.GET.get('q', '')
+        if query:
+            jobs = Job.objects.filter(name__icontains=query)
+            serializer = JobSerializer(jobs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
