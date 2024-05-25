@@ -1,17 +1,13 @@
-from django.contrib import admin
 from django.urls import path
+from .views import appliedjobs, jobdetail, user_login, dashboard, upload_image, pdf_view, delete_account, search_jobs, SearchJobsAPI
 
-from .views import appliedjobs, jobdetail,user_login,dashboard,upload_image,pdf_view,delete_account
 
-
-urlpatterns=[
-    path('detail/<int:id>',jobdetail,name='jobdetail'),
+urlpatterns = [
+    path('detail/<int:id>', jobdetail, name='jobdetail'),
     path('user_login/', user_login, name='user_login'),
-    path('',dashboard,name='dashboard'),
+    path('', dashboard, name='dashboard'),
     path('pdf/', pdf_view, name='pdf_view'),
     path('delete_account/<int:id>/', delete_account, name='delete_account'),
-    path('appliedjobs/', appliedjobs, name='appliedjobs'),
-
-    # path('upload_image', upload_image, name='upload_image'),
-
+    path('search_jobs/', search_jobs, name='search_jobs'),  # Arama sonuçları sayfası
+    path('api/search_jobs/', SearchJobsAPI.as_view(), name='search_jobs_api'),  # API URL
 ]
