@@ -273,9 +273,11 @@
               <div class="card-body">
                 <h5 class="card-title">{{ job.name }}</h5>
                 <p class="card-text">Location: {{ job.location }}</p>
+
                 <a href="{% url 'jobdetail' job.id %}" class="btn btn-danger"
                   >View Details</a
                 >
+                <button class="btn-primary">Apply</button>
               </div>
             </div>
             {% endfor %}
