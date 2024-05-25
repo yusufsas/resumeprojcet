@@ -1,350 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: "Oswald", sans-serif;
+        padding-top: 50px;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Profile</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: "Oswald", sans-serif;
-      padding-top: 50px;
-    }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+      .profile-info {
+        margin-bottom: 30px;
+      }
 
-    .profile-info {
-      margin-bottom: 30px;
-    }
+      .profile-image {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 20px;
+      }
 
-    .profile-image {
-      width: 200px;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-bottom: 20px;
-    }
+      .btn-upload {
+        margin-top: 10px;
+        border-radius: 0.5rem;
+      }
 
-    .btn-upload {
-      margin-top: 10px;
-      border-radius: 0.5rem;
-    }
+      .job-card {
+        margin-bottom: 10px;
+      }
 
-    .job-card {
-      margin-bottom: 10px;
-    }
+      .upload-section {
+        margin-top: 50px;
+      }
 
-    .upload-section {
-      margin-top: 50px;
-    }
+      .navbar {
+        margin-bottom: 30px;
+      }
 
-    .navbar {
-      margin-bottom: 30px;
-    }
+      .card {
+        border: none;
+        border-radius: 0.5rem;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
-    .card {
-      border: none;
-      border-radius: 0.5rem;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
 
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
+      .btn-primary,
+      .btn-danger,
+      .btn-outline-info {
+        border-radius: 0.5rem;
+      }
 
-    .btn-primary,
-    .btn-danger,
-    .btn-outline-info {
-      border-radius: 0.5rem;
-    }
+      .btn-primary:hover,
+      .btn-danger:hover,
+      .btn-outline-info:hover {
+        opacity: 0.8;
+      }
 
-    .btn-primary:hover,
-    .btn-danger:hover,
-    .btn-outline-info:hover {
-      opacity: 0.8;
-    }
+      .search-history div {
+        padding: 8px 16px;
+        cursor: pointer;
+      }
 
-    .search-history div {
-      padding: 8px 16px;
-      cursor: pointer;
-    }
+      .search-history div:hover {
+        background-color: #f1f1f1;
+      }
 
-    .search-history div:hover {
-      background-color: #f1f1f1;
-    }
+      .form-inline {
+        position: relative;
+      }
 
-    .form-inline {
-      position: relative;
-    }
+      .search-history {
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        width: calc(100% - 8px);
+        top: calc(100% + 5px);
+        left: 0;
+      }
+      .navbar-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #007bff; /* Ara butonunun rengi */
+        border-radius: 0 0 20px 0; /* Sol alt köşeyi yuvarlak yapar */
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Kenarlara siyah gölge ekleme */
+        transition: background-color 0.3s ease; /* Arka plan renginin değişimini yumuşatma */
+      }
 
-    .search-history {
-      position: absolute;
-      background-color: white;
-      border: 1px solid #ccc;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 1000;
-      width: calc(100% - 8px);
-      top: calc(100% + 5px);
-      left: 0;
-    }
-  </style>
-</head>
+      .navbar-nav:hover {
+        background-color: #0056b3; /* Hover edildiğinde daha koyu bir mavi tonu */
+      }
 
-<body>
-  <div class="container">
-    <nav class="navbar navbar-light bg-light">
-      <form id="userSearchForm" class="form-inline my-2 my-lg-0 mx-auto" method="post" action="">
-        {% csrf_token %}
-        <input class="form-control mr-sm-2" type="search" placeholder="Kullanıcı Ara" aria-label="Ara" name="search1"
-          autocomplete="off" />
-        <div id="userSearchHistory" class="search-history"></div>
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" name="search1">
-          Ara
-        </button>
-      </form>
-      <form id="jobSearchForm" class="form-inline my-2 my-lg-0 mx-auto" method="post" action="{% url 'search_jobs' %}">
-        {% csrf_token %}
-        <input class="form-control mr-sm-2" type="search" placeholder="İş Ara" aria-label="Ara" name="q"
-          autocomplete="off" />
-        <div id="jobSearchHistory" class="search-history"></div>
-        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" name="search2">
-          Ara
-        </button>
-      </form>
+      .navbar-nav .btn-primary,
+      .navbar-nav .btn-danger,
+      .navbar-nav .btn-outline-info {
+        border-radius: 0.5rem;
+      }
 
-    </nav>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="profile-info text-center">
-          <h1>Welcome, {{ user.first_name }} {{ user.last_name }}</h1>
-          <img src="{% if account.image %}{{ account.image.url }}{% else %}https://via.placeholder.com/200{% endif %}"
-            alt="Profile Image" class="profile-image" />
-          <p>Email: {{ user.email }}</p>
-          <p>Phone: {{ account.number }}</p>
-          {% if account.cv %}
-          <a href="{% url 'pdf_view' %}" class="btn btn-dark btn-upload">View CV</a>
-          {% else %}
-          <p>No CV available.</p>
+      .navbar-nav .btn-primary:hover,
+      .navbar-nav .btn-danger:hover,
+      .navbar-nav .btn-outline-info:hover {
+        opacity: 0.8;
+      }
+
+      .navbar-nav:hover .btn-primary,
+      .navbar-nav:hover .btn-danger,
+      .navbar-nav:hover .btn-outline-info {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a href="{% url 'appliedjobs'%}" class="nav-link" style="color: white"
+          >Applied Jobs</a
+        >
+      </li>
+    </ul>
+
+    <div class="container">
+      <nav class="navbar navbar-light bg-light">
+        <form
+          id="userSearchForm"
+          class="form-inline my-2 my-lg-0 mx-auto"
+          method="post"
+          action=""
+        >
+          {% csrf_token %}
+          <input
+            class="form-control mr-sm-2"
+            type="search"
+            placeholder="Kullanıcı Ara"
+            aria-label="Ara"
+            name="search1"
+            autocomplete="off"
+          />
+          <div id="userSearchHistory" class="search-history"></div>
+          <button
+            class="btn btn-outline-info my-2 my-sm-0"
+            type="submit"
+            name="search1"
+          >
+            Ara
+          </button>
+        </form>
+        <form
+          id="jobSearchForm"
+          class="form-inline my-2 my-lg-0 mx-auto"
+          method="post"
+          action="{% url 'search_jobs' %}"
+        >
+          {% csrf_token %}
+          <input
+            class="form-control mr-sm-2"
+            type="search"
+            placeholder="İş Ara"
+            aria-label="Ara"
+            name="q"
+            autocomplete="off"
+          />
+          <div id="jobSearchHistory" class="search-history"></div>
+          <button
+            class="btn btn-outline-info my-2 my-sm-0"
+            type="submit"
+            name="search2"
+          >
+            Ara
+          </button>
+        </form>
+      </nav>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="profile-info text-center">
+            <h1>Welcome, {{ user.first_name }} {{ user.last_name }}</h1>
+            <img
+              src="{% if account.image %}{{ account.image.url }}{% else %}https://via.placeholder.com/200{% endif %}"
+              alt="Profile Image"
+              class="profile-image"
+            />
+            <p>Email: {{ user.email }}</p>
+            <p>Phone: {{ account.number }}</p>
+            {% if account.cv %}
+            <a href="{% url 'pdf_view' %}" class="btn btn-dark btn-upload"
+              >View CV</a
+            >
+            {% else %}
+            <p>No CV available.</p>
+            {% endif %}
+          </div>
+
+          {% if request.user.account.role == "manager" %}
+          <div>
+            <form method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" />
+              </div>
+              <div class="form-group">
+                <label for="description">Description:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="description"
+                  name="description"
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn btn-dark btn-upload"
+                name="addjob"
+              >
+                Publish
+              </button>
+            </form>
+          </div>
+          {% endif %}
+
+          <div class="upload-section">
+            <div class="mt-4">
+              <h2>Upload Profile Image</h2>
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                  <input type="file" name="resim" class="form-control-file" />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-dark btn-upload"
+                  name="form1_submit"
+                >
+                  Upload
+                </button>
+              </form>
+            </div>
+
+            <div class="mt-4">
+              <h2>Upload CV</h2>
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                  <input
+                    type="file"
+                    id="pdf_file"
+                    name="pdf_file"
+                    class="form-control-file"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-dark btn-upload"
+                  name="form2_submit"
+                >
+                  Upload
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {% if request.user.account.role == "admin" %}
+          <div>
+            {% for acc in accounts %}
+            <div class="card p-3">
+              <h1>{{ acc.first_name }} {{ acc.last_name }}</h1>
+              <img
+                src="{% if acc.image %}{{ acc.image.url }}{% else %}https://via.placeholder.com/200{% endif %}"
+                alt="Profile Image"
+                class="profile-image mb-4"
+              />
+              <form action="{% url 'delete_account' acc.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sil</button>
+              </form>
+            </div>
+            {% endfor %}
+          </div>
           {% endif %}
         </div>
 
-        {% if request.user.account.role == "manager" %}
-        <div>
-          <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-              <label for="name">Name:</label>
-              <input type="text" class="form-control" id="name" name="name" />
-            </div>
-            <div class="form-group">
-              <label for="description">Description:</label>
-              <input type="text" class="form-control" id="description" name="description" />
-            </div>
-            <button type="submit" class="btn btn-dark btn-upload" name="addjob">
-              Publish
-            </button>
-          </form>
-        </div>
-        {% endif %}
-
-        <div class="upload-section">
-          <div class="mt-4">
-            <h2>Upload Profile Image</h2>
-            <form method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group">
-                <input type="file" name="resim" class="form-control-file" />
+        <div class="col-md-6">
+          <h2 class="display-6">Jobs</h2>
+          <div class="job-list">
+            {% for job in jobs %}
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">{{ job.name }}</h5>
+                <p class="card-text">Location: {{ job.location }}</p>
+                <a href="{% url 'jobdetail' job.id %}" class="btn btn-danger"
+                  >View Details</a
+                >
+                <button class="btn-primary">Apply</button>
               </div>
-              <button type="submit" class="btn btn-dark btn-upload" name="form1_submit">
-                Upload
-              </button>
-            </form>
-          </div>
-
-          <div class="mt-4">
-            <h2>Upload CV</h2>
-            <form method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group">
-                <input type="file" id="pdf_file" name="pdf_file" class="form-control-file" />
-              </div>
-              <button type="submit" class="btn btn-dark btn-upload" name="form2_submit">
-                Upload
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {% if request.user.account.role == "admin" %}
-        <div>
-          {% for acc in accounts %}
-          <div class="card p-3">
-            <h1>{{ acc.first_name }} {{ acc.last_name }}</h1>
-            <img src="{% if acc.image %}{{ acc.image.url }}{% else %}https://via.placeholder.com/200{% endif %}"
-              alt="Profile Image" class="profile-image mb-4" />
-            <form action="{% url 'delete_account' acc.id %}" method="post">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-danger">Sil</button>
-            </form>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
-
-      <div class="col-md-6">
-        <h2 class="display-6">Jobs</h2>
-        <div class="job-list">
-          {% for job in jobs %}
-          <div class="card mb-3">
-            <div class="card-body">
-              <h5 class="card-title">{{ job.name }}</h5>
-              <p class="card-text">Location: {{ job.location }}</p>
-              <a href="{% url 'jobdetail' job.id %}" class="btn btn-danger">View Details</a>
-              <button class="btn-primary">Apply</button>
             </div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
       </div>
     </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
-  <script>
-    function setCookie(name, value, days) {
-      var expires = "";
-      if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-        expires = "; expires=" + date.toUTCString();
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
       }
-      document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
 
-    function getCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0)
-          return c.substring(nameEQ.length, c.length);
+      function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == " ") c = c.substring(1, c.length);
+          if (c.indexOf(nameEQ) == 0)
+            return c.substring(nameEQ.length, c.length);
+        }
+        return null;
       }
-      return null;
-    }
 
-    function eraseCookie(name) {
-      document.cookie = name + "=; Max-Age=-99999999;";
-    }
+      function eraseCookie(name) {
+        document.cookie = name + "=; Max-Age=-99999999;";
+      }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      var userSearchInput = document.querySelector('input[name="search1"]');
-      var jobSearchInput = document.querySelector('input[name="q"]');
-      var userSearchHistory = document.getElementById("userSearchHistory");
-      var jobSearchHistory = document.getElementById("jobSearchHistory");
+      document.addEventListener("DOMContentLoaded", function () {
+        var userSearchInput = document.querySelector('input[name="search1"]');
+        var jobSearchInput = document.querySelector('input[name="q"]');
+        var userSearchHistory = document.getElementById("userSearchHistory");
+        var jobSearchHistory = document.getElementById("jobSearchHistory");
 
-      if (userSearchInput) {
-        userSearchInput.addEventListener("focus", function () {
-          var userSearches = getCookie("userSearches");
-          if (userSearches) {
-            showSearchHistory(userSearchHistory, userSearches.split(","));
-          }
-        });
-
-        userSearchInput.addEventListener("input", function () {
-          var userSearches = getCookie("userSearches");
-          if (userSearches) {
-            showSearchHistory(userSearchHistory, userSearches.split(","));
-          }
-        });
-
-        userSearchInput
-          .closest("form")
-          .addEventListener("submit", function () {
-            var query = userSearchInput.value;
+        if (userSearchInput) {
+          userSearchInput.addEventListener("focus", function () {
             var userSearches = getCookie("userSearches");
-            userSearches = userSearches ? userSearches.split(",") : [];
-            if (!userSearches.includes(query)) {
-              userSearches.push(query);
-              setCookie("userSearches", userSearches.join(","), 30);
+            if (userSearches) {
+              showSearchHistory(userSearchHistory, userSearches.split(","));
             }
           });
-      }
 
-      if (jobSearchInput) {
-        jobSearchInput.addEventListener("focus", function () {
-          var jobSearches = getCookie("jobSearches");
-          if (jobSearches) {
-            showSearchHistory(jobSearchHistory, jobSearches.split(","));
-          }
-        });
+          userSearchInput.addEventListener("input", function () {
+            var userSearches = getCookie("userSearches");
+            if (userSearches) {
+              showSearchHistory(userSearchHistory, userSearches.split(","));
+            }
+          });
 
-        jobSearchInput.addEventListener("input", function () {
-          var jobSearches = getCookie("jobSearches");
-          if (jobSearches) {
-            showSearchHistory(jobSearchHistory, jobSearches.split(","));
-          }
-        });
+          userSearchInput
+            .closest("form")
+            .addEventListener("submit", function () {
+              var query = userSearchInput.value;
+              var userSearches = getCookie("userSearches");
+              userSearches = userSearches ? userSearches.split(",") : [];
+              if (!userSearches.includes(query)) {
+                userSearches.push(query);
+                setCookie("userSearches", userSearches.join(","), 30);
+              }
+            });
+        }
 
-        jobSearchInput
-          .closest("form")
-          .addEventListener("submit", function () {
-            var query = jobSearchInput.value;
+        if (jobSearchInput) {
+          jobSearchInput.addEventListener("focus", function () {
             var jobSearches = getCookie("jobSearches");
-            jobSearches = jobSearches ? jobSearches.split(",") : [];
-            if (!jobSearches.includes(query)) {
-              jobSearches.push(query);
-              setCookie("jobSearches", jobSearches.join(","), 30);
+            if (jobSearches) {
+              showSearchHistory(jobSearchHistory, jobSearches.split(","));
             }
           });
-      }
-      function showSearchHistory(container, searches) {
-        container.innerHTML = "";
-        searches.forEach(function (search) {
-          var searchItem = document.createElement("div");
-          searchItem.textContent = search;
-          searchItem.addEventListener("click", function () {
-            container.previousElementSibling.value = search;
-            container.style.display = "none";
+
+          jobSearchInput.addEventListener("input", function () {
+            var jobSearches = getCookie("jobSearches");
+            if (jobSearches) {
+              showSearchHistory(jobSearchHistory, jobSearches.split(","));
+            }
           });
-          container.appendChild(searchItem);
+
+          jobSearchInput
+            .closest("form")
+            .addEventListener("submit", function () {
+              var query = jobSearchInput.value;
+              var jobSearches = getCookie("jobSearches");
+              jobSearches = jobSearches ? jobSearches.split(",") : [];
+              if (!jobSearches.includes(query)) {
+                jobSearches.push(query);
+                setCookie("jobSearches", jobSearches.join(","), 30);
+              }
+            });
+        }
+        function showSearchHistory(container, searches) {
+          container.innerHTML = "";
+          searches.forEach(function (search) {
+            var searchItem = document.createElement("div");
+            searchItem.textContent = search;
+            searchItem.addEventListener("click", function () {
+              container.previousElementSibling.value = search;
+              container.style.display = "none";
+            });
+            container.appendChild(searchItem);
+          });
+          container.style.display = "block";
+          container.style.width =
+            container.previousElementSibling.offsetWidth - 8 + "px";
+          container.style.top =
+            container.previousElementSibling.offsetHeight + 5 + "px";
+        }
+
+        document.addEventListener("click", function (e) {
+          if (
+            !userSearchInput.contains(e.target) &&
+            !userSearchHistory.contains(e.target)
+          ) {
+            userSearchHistory.style.display = "none";
+          }
+          if (
+            !jobSearchInput.contains(e.target) &&
+            !jobSearchHistory.contains(e.target)
+          ) {
+            jobSearchHistory.style.display = "none";
+          }
         });
-        container.style.display = "block";
-        container.style.width =
-          container.previousElementSibling.offsetWidth - 8 + "px";
-        container.style.top =
-          container.previousElementSibling.offsetHeight + 5 + "px";
-      }
-
-      document.addEventListener("click", function (e) {
-        if (
-          !userSearchInput.contains(e.target) &&
-          !userSearchHistory.contains(e.target)
-        ) {
-          userSearchHistory.style.display = "none";
-        }
-        if (
-          !jobSearchInput.contains(e.target) &&
-          !jobSearchHistory.contains(e.target)
-        ) {
-          jobSearchHistory.style.display = "none";
-        }
       });
-    });
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>

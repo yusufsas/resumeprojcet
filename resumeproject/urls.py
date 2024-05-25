@@ -20,6 +20,7 @@ from dashboard.views import index
 from django.conf.urls.static import static
 from dashboard.views import signup
 from django.contrib.auth import views as auth_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index,name='index'),
@@ -27,7 +28,5 @@ urlpatterns = [
     path('signup/', signup, name='signup'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
-
-
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)\
  +static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

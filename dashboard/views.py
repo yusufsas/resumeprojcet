@@ -11,6 +11,7 @@ from .serializers import JobSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render
 
 import cv2
 import os
@@ -164,6 +165,8 @@ def jobdetail(request, id):
     job = Job.objects.get(id=id)
     return render(request, 'jobdetail.html', {'job': job})
 
+def appliedjobs(request):
+    return render(request, 'appliedjobs.html')
 
 def yuz_algila(image):
     # OpenCV kullanarak yüz algılama işlemi
