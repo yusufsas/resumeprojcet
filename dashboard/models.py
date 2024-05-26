@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
+
 from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
@@ -19,6 +19,13 @@ class  Account(models.Model):
     image = models.ImageField(upload_to="images", blank=True)
     cv = models.FileField(upload_to="pdf/", blank=True)
     number = models.CharField(max_length=15, blank=True, null=True, verbose_name='GSM Number')
+    user_name = models.CharField(max_length=150, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Her kayıt işlemi sırasında kullanıcı adını güncelleyin
+        if self.user:
+            self.user_name = self.user.first_name
+        super().save(*args, **kwargs)
 
     ROLE_ADMIN = 'admin'
     ROLE_MANAGER = 'manager'
@@ -44,6 +51,7 @@ class Job(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 # Create your models here.

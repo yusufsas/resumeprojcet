@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Job Search Results</title>
+    <title>User Search Results</title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -11,19 +11,22 @@
   </head>
   <body>
     <div class="container mt-5">
-      <h1>Job Search Results</h1>
-      <div id="job-results">
-        {% if jobs %} {% for job in jobs %}
+      <h1>User Search Results</h1>
+      <div id="user-results">
+        {% if users %} {% for user in users %}
         <div class="card mb-3">
           <div class="card-body">
-            <h5 class="card-title">{{ job.name }}</h5>
-            <p class="card-text">{{ job.description }}</p>
-            <p class="card-text">Location: {{ job.location }}</p>
-            <a href="{% url 'jobdetail' job.id %}" class="btn btn-danger">View Details</a>
+            <h5 class="card-title">{{ user.id }}</h5>
+            <p class="card-text">{{ user.user_name }}</p>
+            {% if user.cv %}
+            <a href="{{ user.cv.url }}" class="card-text">CV</a>
+            {% endif %}
+            <p class="card-text">Number: {{ user.number }}</p>
+           
           </div>
         </div>
         {% endfor %} {% else %}
-        <p>No jobs found.</p>
+        <p>No users found.</p>
         {% endif %}
       </div>
     </div>

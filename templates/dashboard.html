@@ -154,7 +154,7 @@
           id="userSearchForm"
           class="form-inline my-2 my-lg-0 mx-auto"
           method="post"
-          action=""
+          action="{% url 'search_user' %}"
         >
           {% csrf_token %}
           <input
@@ -162,7 +162,7 @@
             type="search"
             placeholder="Kullanıcı Ara"
             aria-label="Ara"
-            name="search1"
+            name="query"
             autocomplete="off"
           />
           <div id="userSearchHistory" class="search-history"></div>
@@ -361,7 +361,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        var userSearchInput = document.querySelector('input[name="search1"]');
+        var userSearchInput = document.querySelector('input[name="query"]');
         var jobSearchInput = document.querySelector('input[name="q"]');
         var userSearchHistory = document.getElementById("userSearchHistory");
         var jobSearchHistory = document.getElementById("jobSearchHistory");

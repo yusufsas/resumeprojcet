@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .forms import SignUpForm, ClientSignUpForm, ImageUploadForm, UserProfileForm
 from .models import Job, Account, ImageUpload, UserProfile
-from .serializers import JobSerializer
+from .serializers import JobSerializer,UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,6 +34,8 @@ def dashboard(request):
         
             user = request.user.id
             account = Account.objects.get(user_id=user)
+            account.user_name=request.user.username
+            account.save()
            
             if request.method == 'POST':
 
@@ -65,7 +67,8 @@ def dashboard(request):
         
             user = request.user.id
             account = Account.objects.get(user_id=user)
-           
+            account.user_name=request.user.username
+            account.save()
             if request.method == 'POST':
 
                 if 'form1_submit' in request.POST:
@@ -103,7 +106,8 @@ def dashboard(request):
         
             user = request.user.id
             account = Account.objects.get(user_id=user)
-           
+            account.user_name=request.user.username
+            account.save()
             if request.method == 'POST':
 
                 if 'form1_submit' in request.POST:
@@ -279,4 +283,20 @@ class SearchJobsAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)
     
+def search_user(request):
+    query = request.POST.get('query', '')
     
+    if query:
+        users = Account.objects.filter(user_name=query)
+        return render(request, 'search_users.html', {'users': users})
+    return render(request, 'search_users.html', {'users': []})
+
+
+class SearchUsersAPI(APIView):
+    def get(self, request):
+        query = request.GET.get('query', '')
+        if query:
+            users = Account.objects.filter(user_name=query)
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)    
