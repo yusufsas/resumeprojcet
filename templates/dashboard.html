@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -107,15 +108,15 @@
         position: fixed;
         top: 0;
         left: 0;
-        background-color: #007bff; /* Ara butonunun rengi */
-        border-radius: 0 0 20px 0; /* Sol alt köşeyi yuvarlak yapar */
+        background-color: #007bff;
+        border-radius: 0 0 20px 0;
         padding: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Kenarlara siyah gölge ekleme */
-        transition: background-color 0.3s ease; /* Arka plan renginin değişimini yumuşatma */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
       }
 
       .navbar-nav:hover {
-        background-color: #0056b3; /* Hover edildiğinde daha koyu bir mavi tonu */
+        background-color: #0056b3;
       }
 
       .navbar-nav .btn-primary,
@@ -451,6 +452,35 @@
           ) {
             jobSearchHistory.style.display = "none";
           }
+        });
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        var applyButtons = document.querySelectorAll(".btn-primary");
+
+        applyButtons.forEach(function (button) {
+          button.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            var jobName = button
+              .closest(".card")
+              .querySelector(".card-title").textContent;
+            var appliedAt = new Date().toISOString();
+
+            var appliedJobs = sessionStorage.getItem("applied_jobs");
+            if (appliedJobs) {
+              appliedJobs = JSON.parse(appliedJobs);
+            } else {
+              appliedJobs = [];
+            }
+            appliedJobs.push({
+              jobName: jobName,
+              appliedAt: appliedAt,
+            });
+
+            sessionStorage.setItem("applied_jobs", JSON.stringify(appliedJobs));
+
+            alert("Application successful!");
+          });
         });
       });
     </script>

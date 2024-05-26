@@ -12,7 +12,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render
-
+from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
+from .models import Job
 import cv2
 import os
 
@@ -165,30 +168,27 @@ def jobdetail(request, id):
     job = Job.objects.get(id=id)
     return render(request, 'jobdetail.html', {'job': job})
 
+@login_required
 def appliedjobs(request):
-    return render(request, 'appliedjobs.html')
+    applied_jobs = request.session.get('applied_jobs', [])
+    messages.warning(request, "asdnndsa.")
+    if applied_jobs:
+        messages.warning(request, "oluyo.")
+        return render(request, 'appliedjobs.html', {'applied_jobs': applied_jobs})
+    else:
+        messages.warning(request, "You haven't applied for any jobs yet.")
+        return render(request, 'appliedjobs.html', {'applied_jobs': []})
 
 def yuz_algila(image):
-    # OpenCV kullanarak yüz algılama işlemi
     yuz_cascadesi = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     
-    # Django'nun imagefield'ı doğrudan bir dosya yoluna işaret etmez, bu yüzden önce bir image dosyasına çevirmemiz gerekiyor
-    # Örneğin, bu işlem için PIL (Python Imaging Library) veya OpenCV kütüphanelerini kullanabilirsiniz.
-    
-    # PIL kullanarak:
-    # image_data = Image.open(image)
-    # fotograf = np.array(image_data)
-    
-    # OpenCV kullanarak:
+   
     fotograf = cv2.imdecode(np.fromstring(image.read(), np.uint8), cv2.IMREAD_COLOR)
     
-    # Gri tonlamaya dönüştür
     gri_tonlama = cv2.cvtColor(fotograf, cv2.COLOR_BGR2GRAY)
     
-    # Yüzleri tespit et
     yuzler = yuz_cascadesi.detectMultiScale(gri_tonlama, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
     
-    # Eğer yüz bulunduysa True, bulunamadıysa False döndür
     if len(yuzler) > 0:
         return True
     else:
