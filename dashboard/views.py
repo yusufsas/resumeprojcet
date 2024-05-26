@@ -265,32 +265,17 @@ def pdf_view(request):
     with open(pdf.path, 'rb') as f:
         response = HttpResponse(f.read(), content_type='application/pdf')
     return response
-
-def search_jobs(request):
-    query = request.POST.get('q', '')
-    if query:
-        jobs = Job.objects.filter(name__icontains=query)
-        return render(request, 'search_jobs.html', {'jobs': jobs})
-    return render(request, 'search_jobs.html', {'jobs': []})
-
-
+    
 class SearchJobsAPI(APIView):
     def get(self, request):
         query = request.GET.get('q', '')
+     
         if query:
             jobs = Job.objects.filter(name__icontains=query)
             serializer = JobSerializer(jobs, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)
-    
-def search_user(request):
-    query = request.POST.get('query', '')
-    
-    if query:
-        users = Account.objects.filter(user_name=query)
-        return render(request, 'search_users.html', {'users': users})
-    return render(request, 'search_users.html', {'users': []})
-
+ 
 
 class SearchUsersAPI(APIView):
     def get(self, request):
@@ -299,4 +284,4 @@ class SearchUsersAPI(APIView):
             users = Account.objects.filter(user_name=query)
             serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)    
+        return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)   

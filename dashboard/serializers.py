@@ -9,4 +9,4 @@ class JobSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['id', 'cv', 'number']     
+        fields = ['id', 'cv', 'number','user_name']    
