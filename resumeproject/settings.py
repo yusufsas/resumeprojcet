@@ -239,6 +239,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp-mail.outlook.com' #  # TLS (Transport Layer Security) kullanımı
+EMAIL_HOST_USER = 'kocaeli_yazilim_der@outlook.com'  # E-posta sağlayıcınızın kullanıcı adı
+EMAIL_HOST_PASSWORD = 'dev123456'
+DEFAULT_FROM_EMAIL = '***************@outlook.com'
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
